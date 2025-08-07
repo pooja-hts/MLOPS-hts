@@ -1,5 +1,6 @@
 options:
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
+
 steps:
   # Step 1: Build Docker image
   - name: 'gcr.io/cloud-builders/docker'
@@ -8,6 +9,18 @@ steps:
   # Step 2: Push to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/hts-repo/big-traderz-scraping:$COMMIT_SHA']
+
+  # ✅ Step 3: Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - big-traderz-scraping
+      - --image=us-central1-docker.pkg.dev/$PROJECT_ID/hts-repo/big-traderz-scraping:$COMMIT_SHA
+      - --region=us-central1
+      - --platform=managed
+      - --allow-unauthenticated
 
 images:
   - 'us-central1-docker.pkg.dev/$PROJECT_ID/hts-repo/big-traderz-scraping:$COMMIT_SHA'
