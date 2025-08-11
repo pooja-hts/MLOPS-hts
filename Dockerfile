@@ -23,3 +23,4 @@ EXPOSE 8080
 
 # Run Streamlit on dynamic port
 CMD ["sh", "-c", "streamlit run app.py --server.port=$PORT --server.address=0.0.0.0"]
+
