@@ -17,9 +17,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 
-# Default product name - can be overridden
 product_name = "Safety Belts & Harness"
-# product_name = "Explosion-proof LED Floodlight"
 # product_name = "1G PVC Modern"
 class FixedSearchExtractor:
     """Fixed version of the search to extraction tool"""
@@ -204,25 +202,10 @@ class FixedSearchExtractor:
                     for element in elements:
                         # Check if element or its parent is clickable
                         if element.is_displayed():
-                            # Prioritize links and clickable elements
-                            element_tag = element.tag_name
-                            element_href = element.get_attribute("href") if element_tag == "a" else None
-                            
-                            # Check if this element or its parent is a link
-                            if element_tag == "a" or element_href:
-                                clickable_elements.append(element)
-                            else:
-                                # Look for parent link
-                                try:
-                                    parent_link = element.find_element(By.XPATH, "./ancestor::a[1]")
-                                    if parent_link and parent_link not in clickable_elements:
-                                        clickable_elements.append(parent_link)
-                                except:
-                                    # If no parent link, still add the element but with lower priority
-                                    clickable_elements.append(element)
+                            clickable_elements.append(element)
                             
                     if clickable_elements:
-                        self.logger.info(f"   Found {len(clickable_elements)} elements containing: {keyword}")
+                        self.logger.info(f"   Found elements containing: {keyword}")
                         break
                         
                 except Exception as e:
@@ -349,23 +332,10 @@ class FixedSearchExtractor:
                 return None
             
             # Try to click on the first promising element
-            for i, element in enumerate(clickable_elements[:5]):  # Try more elements
+            for element in clickable_elements[:5]:  # Try more elements
                 try:
                     element_text = element.text.strip()[:50] if element.text else "Unknown element"
-                    element_tag = element.tag_name
-                    element_href = element.get_attribute("href") if element_tag == "a" else None
-                    
-                    self.logger.info(f"Attempting to click element {i+1}: {element_text}")
-                    self.logger.info(f"   Element type: {element_tag}, href: {element_href}")
-                    
-                    # Check if element is actually clickable
-                    if not element.is_displayed():
-                        self.logger.debug(f"Element {i+1} not displayed, skipping")
-                        continue
-                    
-                    if not element.is_enabled():
-                        self.logger.debug(f"Element {i+1} not enabled, skipping")
-                        continue
+                    self.logger.info(f"Attempting to click element: {element_text}")
                     
                     # Scroll to element
                     self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
@@ -374,39 +344,18 @@ class FixedSearchExtractor:
                     # Get current URL before clicking
                     before_url = self.driver.current_url
                     
-                    # Try different click methods with better error handling
-                    click_success = False
-                    
-                    # Method 1: Regular click
+                    # Try different click methods
                     try:
+                        # Method 1: Regular click
                         element.click()
-                        click_success = True
-                        self.logger.debug(f"Regular click successful for element {i+1}")
-                    except Exception as e:
-                        self.logger.debug(f"Regular click failed for element {i+1}: {e}")
-                    
-                    # Method 2: JavaScript click (if regular click failed)
-                    if not click_success:
+                    except:
                         try:
+                            # Method 2: JavaScript click
                             self.driver.execute_script("arguments[0].click();", element)
-                            click_success = True
-                            self.logger.debug(f"JavaScript click successful for element {i+1}")
-                        except Exception as e:
-                            self.logger.debug(f"JavaScript click failed for element {i+1}: {e}")
-                    
-                    # Method 3: Action chains (if other methods failed)
-                    if not click_success:
-                        try:
+                        except:
+                            # Method 3: Action chains
                             from selenium.webdriver.common.action_chains import ActionChains
                             ActionChains(self.driver).move_to_element(element).click().perform()
-                            click_success = True
-                            self.logger.debug(f"Action chains click successful for element {i+1}")
-                        except Exception as e:
-                            self.logger.debug(f"Action chains click failed for element {i+1}: {e}")
-                    
-                    if not click_success:
-                        self.logger.debug(f"All click methods failed for element {i+1}")
-                        continue
                     
                     time.sleep(3)
                     
@@ -417,10 +366,10 @@ class FixedSearchExtractor:
                         self.logger.info(f"✅ Successfully clicked and navigated to: {after_url}")
                         return after_url
                     else:
-                        self.logger.debug(f"Click didn't result in navigation for element {i+1}, trying next element")
+                        self.logger.debug("Click didn't result in navigation, trying next element")
                         
                 except Exception as e:
-                    self.logger.debug(f"Click failed for element {i+1}: {e}")
+                    self.logger.debug(f"Click failed: {e}")
                     continue
             
             self.logger.warning("Could not successfully click any product element")
@@ -474,192 +423,6 @@ class FixedSearchExtractor:
         # Remove duplicates and limit to most relevant keywords (first 5)
         unique_keywords = list(dict.fromkeys(filtered_keywords))  # Preserve order
         return unique_keywords[:5]
-    
-    def _extract_basic_info_from_search_results(self, search_term):
-        """Extract basic information from search results page when no product can be clicked"""
-        try:
-            self.logger.info("Extracting basic information from search results page...")
-            
-            # Initialize basic product data
-            product_data = {
-                'url': self.driver.current_url,
-                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                'title': search_term,
-                'brand': '',
-                'supplier': '',
-                'category': '',
-                'sku': '',
-                'model': '',
-                'description': '',
-                'key_attributes': {},
-                'technical_specifications': {},
-                'image_downloaded': False,
-                'extraction_success': {
-                    'title': True,  # We have the search term as title
-                    'attributes': False,
-                    'description': False,
-                    'image': False
-                },
-                'extraction_source': 'search_results_page'
-            }
-            
-            # Try to extract any visible product information from the search results
-            page_source = self.driver.page_source
-            page_text = self.driver.page_source.lower()
-            
-            # Look for product cards or list items
-            product_selectors = [
-                ".product-card",
-                ".product-item", 
-                ".search-result",
-                ".item-card",
-                "[class*='product']",
-                "[class*='card']",
-                "li",
-                ".result-item"
-            ]
-            
-            found_products = []
-            for selector in product_selectors:
-                try:
-                    elements = self.driver.find_elements(By.CSS_SELECTOR, selector)
-                    if elements:
-                        self.logger.info(f"Found {len(elements)} elements with selector: {selector}")
-                        found_products = elements
-                        break
-                except Exception as e:
-                    self.logger.debug(f"Selector {selector} failed: {e}")
-                    continue
-            
-            # Extract information from the first few product elements
-            if found_products:
-                for i, element in enumerate(found_products[:3]):  # Check first 3 products
-                    try:
-                        element_text = element.text.strip()
-                        if element_text and len(element_text) > 10:
-                            # Try to extract basic info from element text
-                            self._extract_info_from_text(element_text, product_data)
-                            
-                            # If we found some useful info, break
-                            if (product_data.get('brand') or product_data.get('supplier') or 
-                                product_data.get('sku') or product_data.get('model')):
-                                self.logger.info(f"Found useful information from product element {i+1}")
-                                break
-                    except Exception as e:
-                        self.logger.debug(f"Error extracting from element {i+1}: {e}")
-                        continue
-            
-            # Try to extract from page content using regex patterns
-            self._extract_from_page_content(page_source, product_data)
-            
-            # Log what we found
-            extracted_fields = []
-            for field in ['brand', 'supplier', 'sku', 'model', 'category']:
-                if product_data.get(field):
-                    extracted_fields.append(f"{field}: {product_data[field]}")
-            
-            if extracted_fields:
-                self.logger.info(f"Extracted from search results: {', '.join(extracted_fields)}")
-            else:
-                self.logger.info("No additional information extracted from search results")
-            
-            return product_data
-            
-        except Exception as e:
-            self.logger.error(f"Error extracting basic info from search results: {e}")
-            return None
-    
-    def _extract_info_from_text(self, text, product_data):
-        """Extract basic information from text content"""
-        try:
-            import re
-            
-            # Brand patterns
-            brand_patterns = [
-                r'brand[:\s]+([^,\n]+)',
-                r'manufacturer[:\s]+([^,\n]+)',
-                r'make[:\s]+([^,\n]+)'
-            ]
-            
-            for pattern in brand_patterns:
-                matches = re.findall(pattern, text, re.IGNORECASE)
-                if matches and not product_data.get('brand'):
-                    brand = matches[0].strip()
-                    if brand and len(brand) < 50:
-                        product_data['brand'] = brand
-                        break
-            
-            # Supplier patterns
-            supplier_patterns = [
-                r'supplier[:\s]+([^,\n]+)',
-                r'sold by[:\s]+([^,\n]+)',
-                r'vendor[:\s]+([^,\n]+)'
-            ]
-            
-            for pattern in supplier_patterns:
-                matches = re.findall(pattern, text, re.IGNORECASE)
-                if matches and not product_data.get('supplier'):
-                    supplier = matches[0].strip()
-                    if supplier and len(supplier) < 100:
-                        product_data['supplier'] = supplier
-                        break
-            
-            # SKU patterns
-            sku_patterns = [
-                r'sku[:\s]+([A-Za-z0-9\-_\.]+)',
-                r'item code[:\s]+([A-Za-z0-9\-_\.]+)',
-                r'product code[:\s]+([A-Za-z0-9\-_\.]+)'
-            ]
-            
-            for pattern in sku_patterns:
-                matches = re.findall(pattern, text, re.IGNORECASE)
-                if matches and not product_data.get('sku'):
-                    sku = matches[0].strip()
-                    if sku and len(sku) < 50:
-                        product_data['sku'] = sku
-                        break
-            
-            # Model patterns
-            model_patterns = [
-                r'model[:\s]+([A-Za-z0-9\-_\s\.]+)',
-                r'serial number[:\s]+([A-Za-z0-9\-_\s\.]+)'
-            ]
-            
-            for pattern in model_patterns:
-                matches = re.findall(pattern, text, re.IGNORECASE)
-                if matches and not product_data.get('model'):
-                    model = matches[0].strip()
-                    if model and len(model) < 50:
-                        product_data['model'] = model
-                        break
-                        
-        except Exception as e:
-            self.logger.debug(f"Error extracting info from text: {e}")
-    
-    def _extract_from_page_content(self, page_source, product_data):
-        """Extract information from entire page content"""
-        try:
-            import re
-            
-            # Look for common patterns in the page
-            patterns = [
-                (r'brand[:\s]+([^<\n,]+)', 'brand'),
-                (r'supplier[:\s]+([^<\n,]+)', 'supplier'),
-                (r'sku[:\s]+([A-Za-z0-9\-_\.]+)', 'sku'),
-                (r'model[:\s]+([A-Za-z0-9\-_\s\.]+)', 'model'),
-                (r'category[:\s]+([^<\n,]+)', 'category')
-            ]
-            
-            for pattern, field in patterns:
-                if not product_data.get(field):
-                    matches = re.findall(pattern, page_source, re.IGNORECASE)
-                    if matches:
-                        value = matches[0].strip()
-                        if value and len(value) < 100:
-                            product_data[field] = value
-                            
-        except Exception as e:
-            self.logger.debug(f"Error extracting from page content: {e}")
     
     def _get_simplified_search_terms(self, search_term):
         """Generate simplified search terms for fallback searches"""
@@ -1815,7 +1578,7 @@ class FixedSearchExtractor:
         except Exception as e:
             self.logger.debug(f"Debug analysis failed: {e}")
     
-    def extract_product_details(self, url, search_term=None, product_folder=None):
+    def extract_product_details(self, url):
         """Enhanced extraction with better attribute and description finding"""
         try:
             self.logger.info(f"Extracting details from: {url}")
@@ -1857,7 +1620,7 @@ class FixedSearchExtractor:
             
             self.logger.info("🔍 Step 4: Downloading product image...")
             if self.download_images:
-                self._download_product_image(product_data, product_folder)
+                self._download_product_image(product_data)
             
             # Log extraction success
             success = product_data['extraction_success']
@@ -2175,14 +1938,6 @@ class FixedSearchExtractor:
                 if '<' in str(value) and '>' in str(value):
                     should_remove = True
                 
-                # Remove UNSPSC entries with just ":" value
-                if key == 'UNSPSC' and str(value).strip() == ':':
-                    should_remove = True
-                
-                # Remove empty or invalid values
-                if str(value).strip() in ['', ':', 'N/A', 'Not available', 'None']:
-                    should_remove = True
-                
                 if should_remove:
                     keys_to_remove.append(key)
             
@@ -2406,7 +2161,7 @@ class FixedSearchExtractor:
             product_data['description'] = "Not found"
             product_data['extraction_success']['description'] = False
         
-    def _download_product_image(self, product_data, product_folder=None):
+    def _download_product_image(self, product_data):
         """Download product image after successful attribute extraction"""
         try:
             # Only download image if we have successfully extracted attributes or description
@@ -2484,12 +2239,11 @@ class FixedSearchExtractor:
                 if not best_image:
                     best_image = images_found[0]  # Take first available
                 
-                image_info = self._download_image(best_image['src'], product_folder)
+                image_info = self._download_image(best_image['src'])
                 if image_info:
                     product_data['image_downloaded'] = image_info
-                    product_data['image_path'] = image_info['file_path']  # Add image path for UI
                     product_data['extraction_success']['image'] = True
-                    self.logger.info(f"   ✅ Image downloaded: {image_info['file_path']}")
+                    self.logger.info(f"   ✅ Image downloaded: {image_info['filename']}")
                 else:
                     self.logger.warning("   ❌ Image download failed")
             else:
@@ -2498,8 +2252,8 @@ class FixedSearchExtractor:
         except Exception as e:
             self.logger.error(f"Error downloading image: {e}")
     
-    def _download_image(self, image_url, product_folder=None):
-        """Download product image to product folder"""
+    def _download_image(self, image_url):
+        """Download product image"""
         try:
             if not image_url.startswith('http'):
                 image_url = urljoin(self.base_url, image_url)
@@ -2512,19 +2266,12 @@ class FixedSearchExtractor:
             url_hash = hashlib.md5(image_url.encode()).hexdigest()[:8]
             filename = f"product_image_{url_hash}.jpg"
             
-            # Save image in product folder if available
-            if product_folder and os.path.exists(product_folder):
-                file_path = os.path.join(product_folder, filename)
-            else:
-                file_path = filename
-            
             # Save image
-            with open(file_path, 'wb') as f:
+            with open(filename, 'wb') as f:
                 f.write(response.content)
             
             return {
                 'filename': filename,
-                'file_path': file_path,
                 'url': image_url,
                 'size_bytes': len(response.content)
             }
@@ -2533,66 +2280,44 @@ class FixedSearchExtractor:
             self.logger.warning(f"Failed to download image: {e}")
             return None
     
-    def save_data(self, data, search_term=None, data_folder="data"):
-        """Save data to JSON file in organized folder structure"""
+    def save_data(self, data):
+        """Save data to JSON file (excluding extraction_success field for consistency with Excel export)
+        In cloud-first mode, this method is skipped as data is saved directly to GCS by the main extractor"""
         try:
-            # Create data folder if it doesn't exist
-            if not os.path.exists(data_folder):
-                os.makedirs(data_folder)
-                self.logger.info(f"Created data folder: {data_folder}")
+            # Check if we're in cloud-first mode
+            try:
+                from gcs_config import USE_GCS, EXTRACTION_CONFIG
+                cloud_first_mode = USE_GCS and EXTRACTION_CONFIG.get("cloud_first_mode", False)
+                
+                if cloud_first_mode:
+                    self.logger.info("🌩️ Cloud-first mode: Skipping local file save - data will be saved to GCS by main extractor")
+                    return "skipped_cloud_first_mode"
+            except ImportError:
+                # If gcs_config doesn't exist, proceed with local save
+                cloud_first_mode = False
             
-            # Create product-specific folder
-            if search_term:
-                # Clean search term for folder name
-                safe_search_term = "".join(c for c in search_term if c.isalnum() or c in (' ', '-', '_')).rstrip()
-                safe_search_term = safe_search_term.replace(' ', '_')
-                product_folder = os.path.join(data_folder, safe_search_term)
-            else:
-                product_folder = os.path.join(data_folder, f"product_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
+            # Create a copy of the data excluding extraction_success
+            clean_data = data.copy() if data else {}
+            if 'extraction_success' in clean_data:
+                del clean_data['extraction_success']
             
-            # Create product folder if it doesn't exist
-            if not os.path.exists(product_folder):
-                os.makedirs(product_folder)
-                self.logger.info(f"Created product folder: {product_folder}")
-            
-            # Save JSON data
-            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            json_filename = f"product_data_{timestamp}.json"
-            json_path = os.path.join(product_folder, json_filename)
-            
-            with open(json_path, 'w', encoding='utf-8') as f:
-                json.dump(data, f, indent=2, ensure_ascii=False)
-            
-            self.logger.info(f"Data saved to: {json_path}")
-            
-            # Update data with file paths
-            data['file_paths'] = {
-                'json_file': json_path,
-                'product_folder': product_folder,
-                'search_term': search_term,
-                'timestamp': timestamp
-            }
-            
-            return json_path
-            
+            filename = f"search_extraction_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            with open(filename, 'w', encoding='utf-8') as f:
+                json.dump(clean_data, f, indent=2, ensure_ascii=False)
+            self.logger.info(f"💾 Local mode: Data saved to: {filename}")
+            return filename
         except Exception as e:
             self.logger.error(f"Error saving data: {e}")
             return None
     
-    def run_complete_workflow(self, search_term=product_name, data_folder="data"):
+    def run_complete_workflow(self, search_term=product_name):
         """Run the complete workflow from search to extraction"""
         try:
             print("="*70)
             print("FIXED iPROCURE SEARCH TO EXTRACTION WORKFLOW")
             print("="*70)
             print(f"Search term: {search_term}")
-            print(f"Data folder: {data_folder}")
             print()
-            
-            # Create product folder path
-            safe_search_term = "".join(c for c in search_term if c.isalnum() or c in (' ', '-', '_')).rstrip()
-            safe_search_term = safe_search_term.replace(' ', '_')
-            product_folder = os.path.join(data_folder, safe_search_term)
             
             # Step 1: Test search URL
             print("🔍 Step 1: Testing search URL...")
@@ -2628,7 +2353,7 @@ class FixedSearchExtractor:
                 
                 # Step 3: Extract product details
                 print("📦 Step 3: Extracting product details...")
-                product_data = self.extract_product_details(product_url, search_term, product_folder)
+                product_data = self.extract_product_details(product_url)
             else:
                 # We got basic data from search results
                 product_data = product_result
@@ -2645,7 +2370,7 @@ class FixedSearchExtractor:
             
             # Step 4: Save results
             print("💾 Step 4: Saving results...")
-            filename = self.save_data(product_data, search_term, data_folder)
+            filename = self.save_data(product_data)
             
             # Display results
             print("📊 DETAILED EXTRACTION RESULTS")

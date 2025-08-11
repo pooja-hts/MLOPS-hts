@@ -1,20 +1,17 @@
-# Core dependencies
-streamlit
-langgraph
-pandas
-plotly
-
-# Web scraping and automation
-selenium
 requests
-
-# Data processing
-numpy
-python-dateutil
-
-# File handling
-Pillow
-
-# Optional: For better performance
-lxml
 beautifulsoup4
+selenium
+lxml
+webdriver-manager
+langgraph
+langchain
+langchain-openai
+pydantic
+typing-extensions
+python-dotenv
+streamlit
+pillow
+plotly
+pandas
+openpyxl
+google-cloud-storage

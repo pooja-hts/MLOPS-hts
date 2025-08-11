@@ -11,7 +11,6 @@ from selenium.webdriver.chrome.options import Options
 from urllib.parse import urljoin, urlparse
 import pandas as pd
 
-
 class iProcureProductListExtractor:
     def __init__(self, headless=True, delay=2, debug=False):
         """

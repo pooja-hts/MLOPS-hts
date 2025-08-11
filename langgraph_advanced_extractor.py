@@ -20,7 +20,6 @@ from google.cloud import storage
 from google.api_core import exceptions as gcs_exceptions
 import tempfile
 import io
-import sys
 
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
@@ -33,13 +32,7 @@ from iprocure_product_list_extractor import iProcureProductListExtractor
 from fixed_search_extraction import FixedSearchExtractor
 
 # Set up logging
-# logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-    handlers=[logging.StreamHandler(sys.stdout)],
-    force=True  # <-- important to override any existing settings
-)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 class ProductState(str, Enum):
