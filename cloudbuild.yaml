@@ -22,7 +22,7 @@ steps:
       - --region=us-central1
       - --platform=managed
       - --allow-unauthenticated
-      - --memory=2Gi
+      - --memory=3Gi
 
 images:
   - 'us-central1-docker.pkg.dev/$PROJECT_ID/hts-repo/big-traderz-scraping:$COMMIT_SHA'
