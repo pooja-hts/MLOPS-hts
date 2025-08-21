@@ -9,6 +9,7 @@ Hybrid mode:
 import os
 from google.oauth2 import service_account
 from google.cloud import storage
+import google.auth
 
 # Load environment variables
 from dotenv import load_dotenv
@@ -77,7 +78,7 @@ def get_gcs_client():
 def validate_gcs_config():
     """Validate GCS configuration"""
     if USE_GCS:
-        if GCS_BUCKET_NAME == "your-bucket-name":
+        if GCS_BUCKET_NAME == "scraped-data-bucket-hts-big-traderz":
             print("Please update GCS_BUCKET_NAME in gcs_config.py with your actual bucket name")
             return False
         
@@ -115,4 +116,5 @@ def print_setup_instructions():
             print(f"  {key}: {'***' if value else 'NOT SET'}")
         else:
             print(f"  {key}: {value or 'NOT SET'}")
+
 
