@@ -7,7 +7,7 @@ Cloud-First Architecture: Google Cloud Storage Only
 
 # GCS Configuration - Always enabled for cloud-first mode
 USE_GCS = True
-GCS_BUCKET_NAME = "scraped-data-bucket-hts"
+GCS_BUCKET_NAME = "scraped-data-bucket-hts-big-traderz"
 GCS_DATA_FOLDER = "data"
 
 # Extraction Configuration
@@ -23,7 +23,7 @@ EXTRACTION_CONFIG = {
 def validate_gcs_config():
     """Validate GCS configuration"""
     if USE_GCS:
-        if GCS_BUCKET_NAME == "your-bucket-name":
+        if GCS_BUCKET_NAME == "scraped-data-bucket-hts-big-traderz":
             print("Please update GCS_BUCKET_NAME in gcs_config.py with your actual bucket name")
             return False
         
@@ -45,3 +45,4 @@ def validate_gcs_config():
 def print_setup_instructions():
     """Print GCS setup instructions"""
     pass
+
