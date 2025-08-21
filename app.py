@@ -101,7 +101,7 @@ st.sidebar.subheader("🌩️ Google Cloud Storage")
 
 bucket_name = st.sidebar.text_input(
     "GCS Bucket Name", 
-    value="scraped-data-bucket-hts", 
+    value="scraped-data-bucket-hts-big-traderz", 
     help="Enter your GCS bucket name (without gs:// prefix)"
 )
 data_folder = st.sidebar.text_input(
@@ -441,4 +441,5 @@ st.markdown("""
 # Auto-refresh for real-time updates when extraction is running
 if is_running:
     time.sleep(3)  # Refresh every 3 seconds
+
     st.rerun() 
