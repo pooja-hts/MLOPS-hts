@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
 Google Cloud Storage Configuration
-Updated via Streamlit UI - 2025-08-20 18:12:03
-Cloud-First Architecture: Google Cloud Storage Only
+Hybrid mode: 
+- Uses explicit credentials if provided in .env 
+- Falls back to ADC in Cloud Run
 """
 
 import os
@@ -43,7 +44,7 @@ EXTRACTION_CONFIG = {
     "cloud_first_mode": True
 }
 
-def get_gcs_client():
+'''def get_gcs_client():
     """Get GCS client with explicit credentials"""
     try:
         # Create credentials from environment variables
@@ -52,7 +53,26 @@ def get_gcs_client():
         return client
     except Exception as e:
         print(f"Failed to create GCS client: {e}")
+        return None'''
+
+def get_gcs_client():
+    """Return a GCS client using either explicit credentials or ADC."""
+    try:
+        # If .env creds exist → explicit mode
+        if GCP_CREDENTIALS.get("project_id") and GCP_CREDENTIALS.get("private_key") and GCP_CREDENTIALS.get("client_email"):
+            credentials = service_account.Credentials.from_service_account_info(GCP_CREDENTIALS)
+            client = storage.Client(credentials=credentials, project=GCP_CREDENTIALS["project_id"])
+            print("✅ Using explicit service account credentials")
+        else:
+            # Fallback: Application Default Credentials (ADC)
+            credentials, project_id = google.auth.default()
+            client = storage.Client(credentials=credentials, project=project_id)
+            print(f"✅ Using ADC (service account from Cloud Run), project={project_id}")
+        return client
+    except Exception as e:
+        print(f"❌ Failed to create GCS client: {e}")
         return None
+        
 
 def validate_gcs_config():
     """Validate GCS configuration"""
@@ -95,3 +115,4 @@ def print_setup_instructions():
             print(f"  {key}: {'***' if value else 'NOT SET'}")
         else:
             print(f"  {key}: {value or 'NOT SET'}")
+
