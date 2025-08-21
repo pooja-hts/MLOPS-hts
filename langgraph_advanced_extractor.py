@@ -16,6 +16,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 import pandas as pd
 import openpyxl
+from gcs_config import get_gcs_client
 from google.cloud import storage
 from google.api_core import exceptions as gcs_exceptions
 import tempfile
@@ -131,7 +132,7 @@ class GCSManager:
     
     def __init__(self, bucket_name: str, client: Optional[storage.Client] = None):
         self.bucket_name = bucket_name
-        self.client = client or storage.Client()
+        self.client = client or get_gcs_client()
         self.bucket = None
         self.logger = logging.getLogger(__name__)
         self._initialize_bucket()
