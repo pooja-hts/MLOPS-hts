@@ -106,7 +106,7 @@ def get_gcs_client():
         return client
     except Exception as e:
         print(f"❌ Failed to create GCS client: {e}")
-        return None
+        return str(e)
 
 
 def validate_gcs_config():
@@ -140,6 +140,7 @@ def print_setup_instructions():
             print(f"  {key}: {'***' if value else 'NOT SET'}")
         else:
             print(f"  {key}: {value or 'NOT SET'}")
+
 
 
 
