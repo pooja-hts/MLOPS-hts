@@ -56,26 +56,9 @@ EXTRACTION_CONFIG = {
         print(f"Failed to create GCS client: {e}")
         return None'''
 
-def get_gcs_client():
-    """Return a GCS client using either explicit credentials or ADC."""
-    try:
-        # If .env creds exist → explicit mode
-        if GCP_CREDENTIALS.get("project_id") and GCP_CREDENTIALS.get("private_key") and GCP_CREDENTIALS.get("client_email"):
-            credentials = service_account.Credentials.from_service_account_info(GCP_CREDENTIALS)
-            client = storage.Client(credentials=credentials, project=GCP_CREDENTIALS["project_id"])
-            print("✅ Using explicit service account credentials")
-        else:
-            # Fallback: Application Default Credentials (ADC)
-            credentials, project_id = google.auth.default()
-            client = storage.Client(credentials=credentials, project=project_id)
-            print(f"✅ Using ADC (service account from Cloud Run), project={project_id}")
-        return client
-    except Exception as e:
-        print(f"❌ Failed to create GCS client: {e}")
-        return None
-        
 
-def validate_gcs_config():
+
+'''def validate_gcs_config():
     """Validate GCS configuration"""
     if USE_GCS:
         if GCS_BUCKET_NAME == "scraped-data-bucket-hts-big-traderz":
@@ -106,7 +89,48 @@ def validate_gcs_config():
         except Exception as e:
             print(f"GCS validation failed: {e}")
             return False
-    return True
+    return True'''
+
+def get_gcs_client():
+    """Get GCS client using either explicit credentials (local) or ADC (Cloud Run)"""
+    try:
+        if GCP_CREDENTIALS.get("private_key") and GCP_CREDENTIALS.get("client_email"):
+            # Use credentials from .env (local dev mode)
+            credentials = service_account.Credentials.from_service_account_info(GCP_CREDENTIALS)
+            client = storage.Client(credentials=credentials, project=GCP_CREDENTIALS["project_id"])
+            print("✅ Using service account credentials from .env")
+        else:
+            # Fallback to Application Default Credentials (ADC)
+            client = storage.Client()
+            print("✅ Using Application Default Credentials (ADC) - Cloud Run/Cloud Build mode")
+        return client
+    except Exception as e:
+        print(f"❌ Failed to create GCS client: {e}")
+        return None
+
+
+def validate_gcs_config():
+    """Validate GCS configuration"""
+    if not USE_GCS:
+        print("GCS disabled in config")
+        return True
+
+    try:
+        client = get_gcs_client()
+        if client is None:
+            return False
+
+        bucket = client.bucket(GCS_BUCKET_NAME)
+        if not bucket.exists():
+            print(f"❌ GCS bucket '{GCS_BUCKET_NAME}' does not exist!")
+            return False
+
+        print(f"✅ GCS bucket '{GCS_BUCKET_NAME}' is accessible")
+        return True
+    except Exception as e:
+        print(f"❌ GCS validation failed: {e}")
+        return False
+
 
 def print_setup_instructions():
     """Print GCS setup instructions"""
@@ -116,6 +140,7 @@ def print_setup_instructions():
             print(f"  {key}: {'***' if value else 'NOT SET'}")
         else:
             print(f"  {key}: {value or 'NOT SET'}")
+
 
 
 
