@@ -45,7 +45,7 @@ EXTRACTION_CONFIG = {
     "cloud_first_mode": True
 }
 
-'''def get_gcs_client():
+def get_gcs_client():
     """Get GCS client with explicit credentials"""
     try:
         # Create credentials from environment variables
@@ -54,9 +54,9 @@ EXTRACTION_CONFIG = {
         return client
     except Exception as e:
         print(f"Failed to create GCS client: {e}")
-        return None'''
+        return None
 
-def get_gcs_client():
+'''def get_gcs_client():
     """Return a GCS client using either explicit credentials or ADC."""
     try:
         # If .env creds exist → explicit mode
@@ -72,7 +72,7 @@ def get_gcs_client():
         return client
     except Exception as e:
         print(f"❌ Failed to create GCS client: {e}")
-        return None
+        return None'''
         
 
 def validate_gcs_config():
@@ -116,5 +116,6 @@ def print_setup_instructions():
             print(f"  {key}: {'***' if value else 'NOT SET'}")
         else:
             print(f"  {key}: {value or 'NOT SET'}")
+
 
 
