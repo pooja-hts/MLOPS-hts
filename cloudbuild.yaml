@@ -1,28 +1,22 @@
-
-options:
-  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
-
 steps:
-  # Step 1: Build Docker image
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/hts-repo/big-traderz-scraping:$COMMIT_SHA', '.']
-
-  # Step 2: Push to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/hts-repo/big-traderz-scraping:$COMMIT_SHA']
-
-  # ✅ Step 3: Deploy to Cloud Run
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
+  # Step 1: Run Scrapy spider and save data
+  - name: 'python:3.10'
+    id: 'Run Scrapy Spider'
+    entrypoint: bash
     args:
-      - run
-      - deploy
-      - big-traderz-scraping
-      - --image=us-central1-docker.pkg.dev/$PROJECT_ID/hts-repo/big-traderz-scraping:$COMMIT_SHA
-      - --region=us-central1
-      - --platform=managed
-      - --allow-unauthenticated
-      - --memory=3Gi
+      - -c
+      - |
+        pip install --upgrade pip
+        pip install -r requirements.txt
+        mkdir -p /workspace/data
+        cd folder_path/lulu_pipeline
+        scrapy crawl lulu -o /workspace/data/products.json
 
-images:
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/hts-repo/big-traderz-scraping:$COMMIT_SHA'
+  # Step 2: Upload scraped data to GCS (raw folder)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'Upload Data to GCS'
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        gsutil cp -r /workspace/data/* gs://scraped-data-bucket-hts-big-traderz/raw/
