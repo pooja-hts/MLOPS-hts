@@ -1,3 +1,7 @@
+
+options:
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
+  
 steps:
   # Step 1: Run Scrapy spider and save data
   - name: 'python:3.10'
