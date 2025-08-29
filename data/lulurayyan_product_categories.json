@@ -1,0 +1,912 @@
+[
+  {
+    "category_name": "Abrasives",
+    "category_url": "https://lulurayyangroup.com/product-category/abrasives/",
+    "category_id": "abrasives",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Abrasives",
+        "url": "https://lulurayyangroup.com/product-category/abrasives/",
+        "id": "abrasives",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 3,
+    "scraped_at": "2025-08-26T14:10:56.544287"
+  },
+  {
+    "category_name": "Adhesive, Sealant & Tapes & Foam Spray",
+    "category_url": "https://lulurayyangroup.com/product-category/sealant-tapes/",
+    "category_id": "sealant-tapes",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Adhesive, Sealant & Tapes & Foam Spray",
+        "url": "https://lulurayyangroup.com/product-category/sealant-tapes/",
+        "id": "sealant-tapes",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Aluminum Tape",
+        "url": "https://lulurayyangroup.com/product-category/sealant-tapes/aluminum-tape/",
+        "id": "sealant-tapes",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Duct Tape",
+        "url": "https://lulurayyangroup.com/product-category/sealant-tapes/duct-tape/",
+        "id": "sealant-tapes",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Foam Spray",
+        "url": "https://lulurayyangroup.com/product-category/sealant-tapes/foam-spray/",
+        "id": "sealant-tapes",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Masking Tapes",
+        "url": "https://lulurayyangroup.com/product-category/sealant-tapes/masking-tapes/",
+        "id": "sealant-tapes",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Silicone Sealant",
+        "url": "https://lulurayyangroup.com/product-category/sealant-tapes/silicone-sealant/",
+        "id": "sealant-tapes",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Tapes",
+        "url": "https://lulurayyangroup.com/product-category/sealant-tapes/tapes/",
+        "id": "sealant-tapes",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 17,
+    "scraped_at": "2025-08-26T14:10:56.545287"
+  },
+  {
+    "category_name": "Angle Valve",
+    "category_url": "https://lulurayyangroup.com/product-category/angle-valve/",
+    "category_id": "angle-valve",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Angle Valve",
+        "url": "https://lulurayyangroup.com/product-category/angle-valve/",
+        "id": "angle-valve",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 1,
+    "scraped_at": "2025-08-26T14:10:56.545287"
+  },
+  {
+    "category_name": "Building Materials",
+    "category_url": "https://lulurayyangroup.com/product-category/building-materials/",
+    "category_id": "building-materials",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Building Materials",
+        "url": "https://lulurayyangroup.com/product-category/building-materials/",
+        "id": "building-materials",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Binding wire",
+        "url": "https://lulurayyangroup.com/product-category/building-materials/binding-wire/",
+        "id": "building-materials",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 1,
+    "scraped_at": "2025-08-26T14:10:56.545287"
+  },
+  {
+    "category_name": "Cable",
+    "category_url": "https://lulurayyangroup.com/product-category/cable-electrical/",
+    "category_id": "cable-electrical",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Cable",
+        "url": "https://lulurayyangroup.com/product-category/cable-electrical/",
+        "id": "cable-electrical",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Best Flexible Cable",
+        "url": "https://lulurayyangroup.com/product-category/cable-electrical/flexible-cable/",
+        "id": "cable-electrical",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 1,
+    "scraped_at": "2025-08-26T14:10:56.545287"
+  },
+  {
+    "category_name": "Chalk Lines",
+    "category_url": "https://lulurayyangroup.com/product-category/chalk-lines/",
+    "category_id": "chalk-lines",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Chalk Lines",
+        "url": "https://lulurayyangroup.com/product-category/chalk-lines/",
+        "id": "chalk-lines",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 1,
+    "scraped_at": "2025-08-26T14:10:56.545287"
+  },
+  {
+    "category_name": "Communication",
+    "category_url": "https://lulurayyangroup.com/product-category/communication/",
+    "category_id": "communication",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Communication",
+        "url": "https://lulurayyangroup.com/product-category/communication/",
+        "id": "communication",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 1,
+    "scraped_at": "2025-08-26T14:10:56.545287"
+  },
+  {
+    "category_name": "CONSTRUCTION CHEMICALS",
+    "category_url": "https://lulurayyangroup.com/product-category/construction-chemicals/",
+    "category_id": "construction-chemicals",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "CONSTRUCTION CHEMICALS",
+        "url": "https://lulurayyangroup.com/product-category/construction-chemicals/",
+        "id": "construction-chemicals",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Gypsum Powder",
+        "url": "https://lulurayyangroup.com/product-category/construction-chemicals/gypsum-powder/",
+        "id": "construction-chemicals",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 1,
+    "scraped_at": "2025-08-26T14:10:56.545287"
+  },
+  {
+    "category_name": "Cotton Rags",
+    "category_url": "https://lulurayyangroup.com/product-category/cotton-rags/",
+    "category_id": "cotton-rags",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Cotton Rags",
+        "url": "https://lulurayyangroup.com/product-category/cotton-rags/",
+        "id": "cotton-rags",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 2,
+    "scraped_at": "2025-08-26T14:10:56.545287"
+  },
+  {
+    "category_name": "Electrical Equipment & Suppliers",
+    "category_url": "https://lulurayyangroup.com/product-category/electrical-equipment-supplies/",
+    "category_id": "electrical-equipment-supplies",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Electrical Equipment & Suppliers",
+        "url": "https://lulurayyangroup.com/product-category/electrical-equipment-supplies/",
+        "id": "electrical-equipment-supplies",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Blank Plate",
+        "url": "https://lulurayyangroup.com/product-category/electrical-equipment-supplies/blank-plate/",
+        "id": "electrical-equipment-supplies",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Bulb",
+        "url": "https://lulurayyangroup.com/product-category/electrical-equipment-supplies/bulb/",
+        "id": "electrical-equipment-supplies",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Cable",
+        "url": "https://lulurayyangroup.com/product-category/electrical-equipment-supplies/cable/",
+        "id": "electrical-equipment-supplies",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Extension Cord",
+        "url": "https://lulurayyangroup.com/product-category/electrical-equipment-supplies/extension-cord-electrical-equipment-supplies/",
+        "id": "electrical-equipment-supplies",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Industrial Fan",
+        "url": "https://lulurayyangroup.com/product-category/electrical-equipment-supplies/industrial-fan/",
+        "id": "electrical-equipment-supplies",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "LED Panel Light",
+        "url": "https://lulurayyangroup.com/product-category/electrical-equipment-supplies/led-panel-light-electrical-equipment-supplies/",
+        "id": "electrical-equipment-supplies",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Spotlight",
+        "url": "https://lulurayyangroup.com/product-category/electrical-equipment-supplies/spotlight-electrical-equipment-supplies/",
+        "id": "electrical-equipment-supplies",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Switches",
+        "url": "https://lulurayyangroup.com/product-category/electrical-equipment-supplies/switches/",
+        "id": "electrical-equipment-supplies",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 8,
+    "scraped_at": "2025-08-26T14:10:56.546286"
+  },
+  {
+    "category_name": "Fasteners and Fixing",
+    "category_url": "https://lulurayyangroup.com/product-category/fasteners-and-fixing/",
+    "category_id": "fasteners-and-fixing",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Fasteners and Fixing",
+        "url": "https://lulurayyangroup.com/product-category/fasteners-and-fixing/",
+        "id": "fasteners-and-fixing",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Anchor",
+        "url": "https://lulurayyangroup.com/product-category/fasteners-and-fixing/anchor/",
+        "id": "fasteners-and-fixing",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Chemical Fixing",
+        "url": "https://lulurayyangroup.com/product-category/fasteners-and-fixing/chemical-fixing/",
+        "id": "fasteners-and-fixing",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Wall Plug",
+        "url": "https://lulurayyangroup.com/product-category/fasteners-and-fixing/wall-plug/",
+        "id": "fasteners-and-fixing",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 19,
+    "scraped_at": "2025-08-26T14:10:56.546286"
+  },
+  {
+    "category_name": "Hand Tools",
+    "category_url": "https://lulurayyangroup.com/product-category/hand-tools/",
+    "category_id": "hand-tools",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Hand Tools",
+        "url": "https://lulurayyangroup.com/product-category/hand-tools/",
+        "id": "hand-tools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Adjustable Wrench",
+        "url": "https://lulurayyangroup.com/product-category/hand-tools/adjustable-wrench/",
+        "id": "hand-tools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Aviation Snip",
+        "url": "https://lulurayyangroup.com/product-category/hand-tools/aviation-snip/",
+        "id": "hand-tools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Benchvice",
+        "url": "https://lulurayyangroup.com/product-category/hand-tools/benchvice/",
+        "id": "hand-tools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Blower",
+        "url": "https://lulurayyangroup.com/product-category/hand-tools/blower-hand-tools/",
+        "id": "hand-tools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Hacksaw frame",
+        "url": "https://lulurayyangroup.com/product-category/hand-tools/hacksaw-frame/",
+        "id": "hand-tools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Hand Pruner",
+        "url": "https://lulurayyangroup.com/product-category/hand-tools/hand-pruner/",
+        "id": "hand-tools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Pipe Cutter",
+        "url": "https://lulurayyangroup.com/product-category/hand-tools/pipe-cutter/",
+        "id": "hand-tools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Pipe Wrench",
+        "url": "https://lulurayyangroup.com/product-category/hand-tools/pipe-wrench/",
+        "id": "hand-tools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Staples",
+        "url": "https://lulurayyangroup.com/product-category/hand-tools/staples/",
+        "id": "hand-tools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Tin Snips",
+        "url": "https://lulurayyangroup.com/product-category/hand-tools/tin-snips/",
+        "id": "hand-tools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Water Pump Plier",
+        "url": "https://lulurayyangroup.com/product-category/hand-tools/water-pump-plier/",
+        "id": "hand-tools",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 15,
+    "scraped_at": "2025-08-26T14:10:56.546286"
+  },
+  {
+    "category_name": "Hardware",
+    "category_url": "https://lulurayyangroup.com/product-category/hardware/",
+    "category_id": "hardware",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Hardware",
+        "url": "https://lulurayyangroup.com/product-category/hardware/",
+        "id": "hardware",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 1,
+    "scraped_at": "2025-08-26T14:10:56.546789"
+  },
+  {
+    "category_name": "Kitchen Sink",
+    "category_url": "https://lulurayyangroup.com/product-category/kitchen-sink/",
+    "category_id": "kitchen-sink",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Kitchen Sink",
+        "url": "https://lulurayyangroup.com/product-category/kitchen-sink/",
+        "id": "kitchen-sink",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 2,
+    "scraped_at": "2025-08-26T14:10:56.546789"
+  },
+  {
+    "category_name": "LED Panel Light",
+    "category_url": "https://lulurayyangroup.com/product-category/led-panel-light/",
+    "category_id": "led-panel-light",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "LED Panel Light",
+        "url": "https://lulurayyangroup.com/product-category/led-panel-light/",
+        "id": "led-panel-light",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 1,
+    "scraped_at": "2025-08-26T14:10:56.546789"
+  },
+  {
+    "category_name": "Manhole cover",
+    "category_url": "https://lulurayyangroup.com/product-category/manhole-cover/",
+    "category_id": "manhole-cover",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Manhole cover",
+        "url": "https://lulurayyangroup.com/product-category/manhole-cover/",
+        "id": "manhole-cover",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 1,
+    "scraped_at": "2025-08-26T14:10:56.546789"
+  },
+  {
+    "category_name": "Paint Accessories",
+    "category_url": "https://lulurayyangroup.com/product-category/paintaccessories/",
+    "category_id": "paintaccessories",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Paint Accessories",
+        "url": "https://lulurayyangroup.com/product-category/paintaccessories/",
+        "id": "paintaccessories",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Best Paint Supplier in Qatar | Jotun Paints",
+        "url": "https://lulurayyangroup.com/product-category/paintaccessories/jotun-paints/",
+        "id": "paintaccessories",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Hiqa Paint Brush",
+        "url": "https://lulurayyangroup.com/product-category/paintaccessories/hiqa-paint-brush/",
+        "id": "paintaccessories",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Paint Roller",
+        "url": "https://lulurayyangroup.com/product-category/paintaccessories/paint-roller/",
+        "id": "paintaccessories",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Wall Scrapper",
+        "url": "https://lulurayyangroup.com/product-category/paintaccessories/wall-scrapper/",
+        "id": "paintaccessories",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 16,
+    "scraped_at": "2025-08-26T14:10:56.546789"
+  },
+  {
+    "category_name": "Personal Protective Equipment",
+    "category_url": "https://lulurayyangroup.com/product-category/ppe/",
+    "category_id": "ppe",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Personal Protective Equipment",
+        "url": "https://lulurayyangroup.com/product-category/ppe/",
+        "id": "ppe",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Safety Coverall",
+        "url": "https://lulurayyangroup.com/product-category/ppe/safety-coverall/",
+        "id": "ppe",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Safety Goggles",
+        "url": "https://lulurayyangroup.com/product-category/ppe/safety-goggles/",
+        "id": "ppe",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Safety Helmet",
+        "url": "https://lulurayyangroup.com/product-category/ppe/safety-helmet/",
+        "id": "ppe",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Safety Shoes",
+        "url": "https://lulurayyangroup.com/product-category/ppe/safety-shoes-ppe/",
+        "id": "ppe",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Safety Vest",
+        "url": "https://lulurayyangroup.com/product-category/ppe/safety-vest/",
+        "id": "ppe",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 8,
+    "scraped_at": "2025-08-26T14:10:56.546789"
+  },
+  {
+    "category_name": "Pipes and Fitting",
+    "category_url": "https://lulurayyangroup.com/product-category/pipes-and-fitting/",
+    "category_id": "pipes-and-fitting",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Pipes and Fitting",
+        "url": "https://lulurayyangroup.com/product-category/pipes-and-fitting/",
+        "id": "pipes-and-fitting",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Flexible Pipe",
+        "url": "https://lulurayyangroup.com/product-category/pipes-and-fitting/flexible-pipe/",
+        "id": "pipes-and-fitting",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "PVC Conduit Fittings",
+        "url": "https://lulurayyangroup.com/product-category/pipes-and-fitting/pvc-conduit-fittings/",
+        "id": "pipes-and-fitting",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 13,
+    "scraped_at": "2025-08-26T14:10:56.547793"
+  },
+  {
+    "category_name": "Plumbing",
+    "category_url": "https://lulurayyangroup.com/product-category/plumbing/",
+    "category_id": "plumbing",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Plumbing",
+        "url": "https://lulurayyangroup.com/product-category/plumbing/",
+        "id": "plumbing",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Angle Valve",
+        "url": "https://lulurayyangroup.com/product-category/plumbing/angle-valve-plumbing/",
+        "id": "plumbing",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Closet cover",
+        "url": "https://lulurayyangroup.com/product-category/plumbing/closet-cover/",
+        "id": "plumbing",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "EWC",
+        "url": "https://lulurayyangroup.com/product-category/plumbing/european-water-closet/",
+        "id": "plumbing",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Faucet",
+        "url": "https://lulurayyangroup.com/product-category/plumbing/faucet/",
+        "id": "plumbing",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Mixer Hose",
+        "url": "https://lulurayyangroup.com/product-category/plumbing/mixer-hose/",
+        "id": "plumbing",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Pressure controller",
+        "url": "https://lulurayyangroup.com/product-category/plumbing/pressure-controller/",
+        "id": "plumbing",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Shattaf",
+        "url": "https://lulurayyangroup.com/product-category/plumbing/shattaf/",
+        "id": "plumbing",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Shower",
+        "url": "https://lulurayyangroup.com/product-category/plumbing/shower/",
+        "id": "plumbing",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Strainer",
+        "url": "https://lulurayyangroup.com/product-category/plumbing/strainer/",
+        "id": "plumbing",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Toilet",
+        "url": "https://lulurayyangroup.com/product-category/plumbing/toilet/",
+        "id": "plumbing",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Wash Basin",
+        "url": "https://lulurayyangroup.com/product-category/plumbing/washbasin/",
+        "id": "plumbing",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Water Pump",
+        "url": "https://lulurayyangroup.com/product-category/plumbing/water-pump/",
+        "id": "plumbing",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 12,
+    "scraped_at": "2025-08-26T14:10:56.547793"
+  },
+  {
+    "category_name": "Power Tools",
+    "category_url": "https://lulurayyangroup.com/product-category/powertools/",
+    "category_id": "powertools",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Power Tools",
+        "url": "https://lulurayyangroup.com/product-category/powertools/",
+        "id": "powertools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Angle Grinder",
+        "url": "https://lulurayyangroup.com/product-category/powertools/angle-grinder/",
+        "id": "powertools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Blower",
+        "url": "https://lulurayyangroup.com/product-category/powertools/blower/",
+        "id": "powertools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Circular Saw",
+        "url": "https://lulurayyangroup.com/product-category/powertools/circular-saw/",
+        "id": "powertools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Combination Hammer",
+        "url": "https://lulurayyangroup.com/product-category/powertools/combination-hammer/",
+        "id": "powertools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Cordless",
+        "url": "https://lulurayyangroup.com/product-category/powertools/cordless/",
+        "id": "powertools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Heat Gun",
+        "url": "https://lulurayyangroup.com/product-category/powertools/heat-gun/",
+        "id": "powertools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "High pressure washer",
+        "url": "https://lulurayyangroup.com/product-category/powertools/high-pressure-washer/",
+        "id": "powertools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Impact Drill",
+        "url": "https://lulurayyangroup.com/product-category/powertools/impact-drill/",
+        "id": "powertools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Jigsaw",
+        "url": "https://lulurayyangroup.com/product-category/powertools/jigsaw/",
+        "id": "powertools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Percussion Drill",
+        "url": "https://lulurayyangroup.com/product-category/powertools/percussion-drill/",
+        "id": "powertools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Portable Cut-Off",
+        "url": "https://lulurayyangroup.com/product-category/powertools/portable-cut-off/",
+        "id": "powertools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Portable Wood Planer",
+        "url": "https://lulurayyangroup.com/product-category/powertools/portable-wood-planer/",
+        "id": "powertools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "POWER DRILLS",
+        "url": "https://lulurayyangroup.com/product-category/powertools/power-drills/",
+        "id": "powertools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Power planer",
+        "url": "https://lulurayyangroup.com/product-category/powertools/power-planer/",
+        "id": "powertools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Rotary Drill",
+        "url": "https://lulurayyangroup.com/product-category/powertools/rotary-drill/",
+        "id": "powertools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Router",
+        "url": "https://lulurayyangroup.com/product-category/powertools/router/",
+        "id": "powertools",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Screw Driver",
+        "url": "https://lulurayyangroup.com/product-category/powertools/screw-driver/",
+        "id": "powertools",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 22,
+    "scraped_at": "2025-08-26T14:10:56.547793"
+  },
+  {
+    "category_name": "PVC Exhaust Fan",
+    "category_url": "https://lulurayyangroup.com/product-category/exhaust-fan/",
+    "category_id": "exhaust-fan",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "PVC Exhaust Fan",
+        "url": "https://lulurayyangroup.com/product-category/exhaust-fan/",
+        "id": "exhaust-fan",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 8,
+    "scraped_at": "2025-08-26T14:10:56.547793"
+  },
+  {
+    "category_name": "Spotlight",
+    "category_url": "https://lulurayyangroup.com/product-category/spotlight/",
+    "category_id": "spotlight",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Spotlight",
+        "url": "https://lulurayyangroup.com/product-category/spotlight/",
+        "id": "spotlight",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 1,
+    "scraped_at": "2025-08-26T14:10:56.547793"
+  },
+  {
+    "category_name": "Tool Accessories",
+    "category_url": "https://lulurayyangroup.com/product-category/tool-accessories/",
+    "category_id": "tool-accessories",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Tool Accessories",
+        "url": "https://lulurayyangroup.com/product-category/tool-accessories/",
+        "id": "tool-accessories",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Cutting Disc",
+        "url": "https://lulurayyangroup.com/product-category/tool-accessories/cutting-disc/",
+        "id": "tool-accessories",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Diamond Wheel",
+        "url": "https://lulurayyangroup.com/product-category/tool-accessories/diamond-wheel/",
+        "id": "tool-accessories",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Drill Bit",
+        "url": "https://lulurayyangroup.com/product-category/tool-accessories/drill-bit/",
+        "id": "tool-accessories",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Grinding Wheel",
+        "url": "https://lulurayyangroup.com/product-category/tool-accessories/grinding-wheel/",
+        "id": "tool-accessories",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Hole Saw",
+        "url": "https://lulurayyangroup.com/product-category/tool-accessories/hole-saw/",
+        "id": "tool-accessories",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 22,
+    "scraped_at": "2025-08-26T14:10:56.547793"
+  },
+  {
+    "category_name": "Uncategorized",
+    "category_url": "https://lulurayyangroup.com/product-category/uncategorized/",
+    "category_id": "uncategorized",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Uncategorized",
+        "url": "https://lulurayyangroup.com/product-category/uncategorized/",
+        "id": "uncategorized",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 1,
+    "scraped_at": "2025-08-26T14:10:56.547793"
+  },
+  {
+    "category_name": "Water Heater",
+    "category_url": "https://lulurayyangroup.com/product-category/water-heater-in-qatar/",
+    "category_id": "water-heater-in-qatar",
+    "description": "Found via product: Product 4",
+    "image_url": "",
+    "subcategories": [
+      {
+        "name": "Water Heater",
+        "url": "https://lulurayyangroup.com/product-category/water-heater-in-qatar/",
+        "id": "water-heater-in-qatar",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Horizontal Water Heater",
+        "url": "https://lulurayyangroup.com/product-category/water-heater-in-qatar/horizontal-water-heater-in-qatar/",
+        "id": "water-heater-in-qatar",
+        "source": "subcategory_extraction"
+      },
+      {
+        "name": "Vertical Water Heater",
+        "url": "https://lulurayyangroup.com/product-category/water-heater-in-qatar/vertical-water-heater-in-qatar/",
+        "id": "water-heater-in-qatar",
+        "source": "subcategory_extraction"
+      }
+    ],
+    "products_count": 7,
+    "scraped_at": "2025-08-26T14:10:56.548793"
+  }
+]
