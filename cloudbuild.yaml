@@ -9,11 +9,10 @@ steps:
     args:
       - -c
       - |
-        set -e
         pip install --upgrade pip
         pip install -r requirements.txt
         mkdir -p /workspace/data
-        scrapy list                    # debug: show available spiders
+        cd lulu_pipeline     # <-- move into folder with scrapy.cfg
         scrapy crawl lulu -o /workspace/data/products.json
 
   # Step 2: Upload scraped data to GCS (raw folder)
