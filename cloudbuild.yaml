@@ -13,8 +13,8 @@ steps:
         pip install --upgrade pip
         pip install -r requirements.txt
         mkdir -p /workspace/data
-        # Run scrapy from repo root (scrapy.cfg is here)
-        scrapy crawl lulu -o /workspace/data/lulu_output.json
+        scrapy list                    # debug: show available spiders
+        scrapy crawl lulu -o /workspace/data/products.json
 
   # Step 2: Upload scraped data to GCS (raw folder)
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
