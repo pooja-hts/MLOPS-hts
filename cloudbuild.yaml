@@ -12,8 +12,8 @@ steps:
         pip install --upgrade pip
         pip install -r requirements.txt
         mkdir -p /workspace/data
-        cd lulu_pipeline     # <-- move into folder with scrapy.cfg
-        scrapy crawl lulu -o /workspace/data/products.json
+        cd lulu_pipeline     # <-- where scrapy.cfg exists
+        scrapy crawl lulurayyan_product_categories -o /workspace/data/products.json
 
   # Step 2: Upload scraped data to GCS (raw folder)
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
