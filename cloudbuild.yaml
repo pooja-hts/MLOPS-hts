@@ -1,18 +1,12 @@
 options:
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
-  
+
 steps:
   # Step 1: Build Docker image
   - name: 'gcr.io/cloud-builders/docker'
-    args:
-      [
-        'build',
-        '-t',
-        'us-central1-docker.pkg.dev/$PROJECT_ID/hts-repo/big-traderz-ui:$COMMIT_SHA',
-        '.'
-      ]
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/hts-repo/big-traderz-ui:$COMMIT_SHA', '.']
 
-  # Step 2: Push image to Artifact Registry
+  # Step 2: Push Docker image
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/hts-repo/big-traderz-ui:$COMMIT_SHA']
 
@@ -21,17 +15,9 @@ steps:
     entrypoint: gcloud
     args:
       [
-        'run',
-        'deploy',
-        'big-traderz-ui',   # Cloud Run service name
-        '--image',
-        'us-central1-docker.pkg.dev/$PROJECT_ID/hts-repo/big-traderz-ui:$COMMIT_SHA',
-        '--region',
-        'us-central1',
-        '--platform',
-        'managed',
+        'run', 'deploy', 'big-traderz-ui',
+        '--image', 'us-central1-docker.pkg.dev/$PROJECT_ID/hts-repo/big-traderz-ui:$COMMIT_SHA',
+        '--region', 'us-central1',
+        '--platform', 'managed',
         '--allow-unauthenticated'
       ]
-
-images:
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/hts-repo/big-traderz-ui:$COMMIT_SHA'
