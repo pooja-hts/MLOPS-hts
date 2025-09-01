@@ -1,445 +1,436 @@
-#!/usr/bin/env python3
-"""
-Streamlit UI for LangGraph Advanced Product Extractor
-Cloud-First Architecture - Google Cloud Storage Only
-No local file handling - Pure GCS integration
-"""
-
 import streamlit as st
-import os
-import json
-import time
-import threading
-import subprocess
-import sys
-from datetime import datetime
 import pandas as pd
-import logging
-from io import StringIO
-import queue
-import tempfile
+import json
+import os
+from pathlib import Path
+import plotly.express as px
+import plotly.graph_objects as go
+from datetime import datetime
+import requests
+from PIL import Image
+import io
 
-# Import the extraction runner
-from streamlit_extractor_runner import ExtractionRunner
-
-# Configure page
+# Page configuration
 st.set_page_config(
-    page_title="Product Extractor Pro",
-    page_icon="🔍",
+    page_title="Lulu Rayyan Products Dashboard",
+    page_icon="🛍️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Note: Server options like CORS and XSRF protection need to be set via command line
+# or config.toml file, not at runtime
 
 # Custom CSS for better styling
 st.markdown("""
 <style>
     .main-header {
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-        padding: 1rem;
-        border-radius: 10px;
+        font-size: 3rem;
+        font-weight: bold;
+        color: #1f77b4;
+        text-align: center;
         margin-bottom: 2rem;
     }
-    .status-success {
-        background-color: #d4edda;
-        border: 1px solid #c3e6cb;
-        color: #155724;
-        padding: 0.75rem;
-        border-radius: 0.5rem;
-        margin: 0.5rem 0;
-    }
-    .status-error {
-        background-color: #f8d7da;
-        border: 1px solid #f5c6cb;
-        color: #721c24;
-        padding: 0.75rem;
-        border-radius: 0.5rem;
-        margin: 0.5rem 0;
-    }
-    .status-warning {
-        background-color: #fff3cd;
-        border: 1px solid #ffeaa7;
-        color: #856404;
-        padding: 0.75rem;
-        border-radius: 0.5rem;
-        margin: 0.5rem 0;
-    }
     .metric-card {
-        background: white;
+        background-color: #f0f2f6;
         padding: 1rem;
-        border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin: 0.5rem 0;
+        border-radius: 0.5rem;
+        border-left: 4px solid #1f77b4;
     }
-    .stMetric {
-        background: #f8f9fa;
-        padding: 0.5rem;
-        border-radius: 5px;
-        border-left: 4px solid #667eea;
+    .filter-section {
+        background-color: #ffffff;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    .product-card {
+        background-color: #ffffff;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 1rem;
+        border-left: 4px solid #1f77b4;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# Initialize session state
-if 'extractor_runner' not in st.session_state:
-    st.session_state.extractor_runner = ExtractionRunner()
-if 'extraction_logs' not in st.session_state:
-    st.session_state.extraction_logs = []
-
-# Header
-st.markdown("""
-<div class="main-header">
-    <h1 style="color: white; margin: 0;">🔍 Product Extractor Pro</h1>
-    <p style="color: #f0f0f0; margin: 0;">Cloud-First Product Extraction - Google Cloud Storage Only</p>
-</div>
-""", unsafe_allow_html=True)
-
-# Sidebar Configuration
-st.sidebar.header("⚙️ Configuration")
-
-# GCS Configuration Section
-st.sidebar.subheader("🌩️ Google Cloud Storage")
-
-bucket_name = st.sidebar.text_input(
-    "GCS Bucket Name", 
-    value="scraped-data-bucket-hts-big-traderz", 
-    help="Enter your GCS bucket name (without gs:// prefix)"
-)
-data_folder = st.sidebar.text_input(
-    "Data Folder", 
-    value="data", 
-    help="Folder name within the bucket for organizing data"
-)
-
-# GCS Authentication Status
-st.sidebar.subheader("🔐 Authentication Status")
-try:
-    from google.cloud import storage
-    client = storage.Client()
-    bucket = client.bucket(bucket_name)
-    if bucket.exists():
-        st.sidebar.markdown('<div class="status-success">✅ GCS Connected</div>', unsafe_allow_html=True)
-        gcs_status = "connected"
-    else:
-        st.sidebar.markdown('<div class="status-error">❌ Bucket not found</div>', unsafe_allow_html=True)
-        gcs_status = "bucket_not_found"
-except Exception as e:
-    st.sidebar.markdown('<div class="status-error">❌ Authentication Failed</div>', unsafe_allow_html=True)
-    st.sidebar.error(f"Error: {str(e)[:100]}...")
-    gcs_status = "auth_failed"
-
-# Cloud-first notice
-st.sidebar.info("🌩️ **Cloud-First Architecture**: All data saved directly to Google Cloud Storage. No local files created.")
-
-# Extraction Configuration
-st.sidebar.subheader("🔧 Extraction Settings")
-
-headless_mode = st.sidebar.checkbox("Headless Mode", value=True, help="Run browser in headless mode")
-delay_between_products = st.sidebar.slider("Delay Between Products (seconds)", 1, 10, 3)
-max_parallel_extractions = st.sidebar.slider("Max Parallel Extractions", 1, 5, 3)
-max_retries = st.sidebar.slider("Max Retries", 1, 5, 3)
-confidence_threshold = st.sidebar.slider("Confidence Threshold", 0.0, 100.0, 50.0)
-
-# Advanced Options
-st.sidebar.subheader("🔬 Advanced Options")
-download_images = st.sidebar.checkbox("Download Product Images", value=True)
-st.sidebar.info("📁 All data automatically saved to GCS (JSON, Excel, Images)")
-
-# Function to update GCS config
-def update_gcs_config():
-    """Update the GCS configuration file for cloud-first mode"""
-    config_content = f'''#!/usr/bin/env python3
-"""
-Google Cloud Storage Configuration
-Updated via Streamlit UI - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-Cloud-First Architecture: Google Cloud Storage Only
-"""
-
-# GCS Configuration - Always enabled for cloud-first mode
-USE_GCS = True
-GCS_BUCKET_NAME = "{bucket_name}"
-GCS_DATA_FOLDER = "{data_folder}"
-
-# Extraction Configuration
-EXTRACTION_CONFIG = {{
-    "headless_mode": {headless_mode},
-    "delay_between_products": {delay_between_products},
-    "max_parallel_extractions": {max_parallel_extractions},
-    "max_retries": {max_retries},
-    "confidence_threshold": {confidence_threshold},
-    "cloud_first_mode": True
-}}
-
-def validate_gcs_config():
-    """Validate GCS configuration"""
-    if USE_GCS:
-        if GCS_BUCKET_NAME == "your-bucket-name":
-            print("Please update GCS_BUCKET_NAME in gcs_config.py with your actual bucket name")
-            return False
-        
-        try:
-            from google.cloud import storage
-            client = storage.Client()
-            bucket = client.bucket(GCS_BUCKET_NAME)
-            if not bucket.exists():
-                print(f"GCS bucket '{{GCS_BUCKET_NAME}}' does not exist!")
-                print("Please create the bucket or update GCS_BUCKET_NAME.")
-                return False
-            print(f"GCS bucket '{{GCS_BUCKET_NAME}}' is accessible")
-            return True
-        except Exception as e:
-            print(f"GCS validation failed: {{e}}")
-            return False
-    return True
-
-def print_setup_instructions():
-    """Print GCS setup instructions"""
-    pass
-'''
-    
-    with open('gcs_config.py', 'w', encoding='utf-8') as f:
-        f.write(config_content)
-
-# Main content area
-col1, col2 = st.columns([2, 1])
-
-with col1:
-    st.header("🚀 Extraction Control")
-    
-    # Get current extraction status
-    runner = st.session_state.extractor_runner
-    is_running = runner.is_running
-    
-    # Status display
-    if is_running:
-        st.markdown(f'<div class="status-warning">⏳ {runner.stats["current_status"]}</div>', unsafe_allow_html=True)
-    else:
-        st.markdown('<div class="status-success">✅ Ready to start cloud extraction</div>', unsafe_allow_html=True)
-    
-    # Control buttons
-    col_start, col_stop, col_clear = st.columns(3)
-    
-    with col_start:
-        if st.button("🚀 Start Cloud Extraction", disabled=is_running):
-            if gcs_status != "connected":
-                st.error("❌ Please fix GCS configuration before starting extraction")
-            else:
-                # Update configuration
-                update_gcs_config()
-                st.success("✅ Starting cloud extraction...")
-                
-                # Start the extraction
-                if runner.start_extraction():
-                    st.session_state.extraction_logs = []
-                    st.rerun()
-                else:
-                    st.error("❌ Failed to start extraction")
-    
-    with col_stop:
-        if st.button("⏹️ Stop Extraction", disabled=not is_running):
-            runner.stop_extraction()
-            st.warning("⏹️ Extraction stopped")
-            st.rerun()
-    
-    with col_clear:
-        if st.button("🗑️ Clear Logs"):
-            st.session_state.extraction_logs = []
-            st.rerun()
-
-with col2:
-    st.header("📊 Quick Stats")
-    
-    # Display current configuration summary
-    st.markdown(f"""
-    <div class="metric-card">
-        <h4>Cloud Configuration</h4>
-        <ul>
-            <li><strong>Storage:</strong> Google Cloud Storage</li>
-            <li><strong>Bucket:</strong> {bucket_name}</li>
-            <li><strong>Data Folder:</strong> {data_folder}</li>
-            <li><strong>Parallel Jobs:</strong> {max_parallel_extractions}</li>
-            <li><strong>Retry Limit:</strong> {max_retries}</li>
-            <li><strong>Confidence:</strong> {confidence_threshold}%</li>
-        </ul>
-    </div>
-    """, unsafe_allow_html=True)
-
-# Progress tracking with real data
-st.header("📈 Extraction Progress")
-
-# Update stats and get new logs
-runner.update_stats_from_files()
-new_logs = runner.get_logs()
-st.session_state.extraction_logs.extend(new_logs)
-
-# Display metrics
-col1, col2, col3, col4 = st.columns(4)
-with col1:
-    st.metric("Products Found", runner.stats['products_found'])
-with col2:
-    st.metric("Successfully Extracted", runner.stats['successful_extractions'])
-with col3:
-    st.metric("Failed Extractions", runner.stats['failed_extractions'])
-with col4:
-    st.metric("Success Rate", f"{runner.stats['success_rate']:.1f}%")
-
-# Progress bar
-if runner.stats['products_found'] > 0:
-    progress = runner.stats['successful_extractions'] / runner.stats['products_found']
-    st.progress(progress, f"Progress: {progress*100:.1f}%")
-
-# Real-time logs section
-st.header("📝 Real-time Logs")
-
-log_container = st.container()
-with log_container:
-    if st.session_state.extraction_logs:
-        # Display logs in reverse order (newest first)
-        for log_entry in reversed(st.session_state.extraction_logs[-20:]):  # Show last 20 logs
-            timestamp = log_entry.get('timestamp', '')
-            level = log_entry.get('level', 'INFO')
-            message = log_entry.get('message', '')
-            
-            if level == 'ERROR':
-                st.error(f"[{timestamp}] {message}")
-            elif level == 'WARNING':
-                st.warning(f"[{timestamp}] {message}")
-            else:
-                st.info(f"[{timestamp}] {message}")
-    else:
-        st.info("No logs yet. Start an extraction to see real-time progress.")
-
-# Results section - GCS Only
-st.header("☁️ Cloud Storage Results")
-
-if gcs_status == "connected":
-    st.subheader("🗂️ GCS Bucket Browser")
+@st.cache_data
+def load_product_data():
+    """Load product data from JSON file"""
     try:
-        from google.cloud import storage
-        client = storage.Client()
-        bucket = client.bucket(bucket_name)
-        
-        blobs = list(bucket.list_blobs(max_results=100))
-        if blobs:
-            # Filter and organize blobs
-            excel_blobs = [b for b in blobs if b.name.endswith('.xlsx')]
-            json_blobs = [b for b in blobs if b.name.endswith('.json') and not b.name.endswith('product_details.json')]
-            image_blobs = [b for b in blobs if b.name.endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp'))]
-            product_json_blobs = [b for b in blobs if b.name.endswith('product_details.json')]
-            
-            # Create tabs for different file types
-            tab1, tab2, tab3, tab4, tab5 = st.tabs(["📊 Excel Reports", "📋 Summaries", "🖼️ Images", "📄 Product JSONs", "📁 All Files"])
-            
-            with tab1:
-                if excel_blobs:
-                    st.write("**Excel Extraction Results**")
-                    for blob in sorted(excel_blobs, key=lambda x: x.updated, reverse=True)[:10]:
-                        col1, col2, col3 = st.columns([3, 2, 2])
-                        with col1:
-                            st.text(f"📄 {blob.name}")
-                        with col2:
-                            st.text(f"🕒 {blob.updated.strftime('%Y-%m-%d %H:%M:%S')}")
-                            st.text(f"📏 {blob.size / 1024:.1f} KB")
-                        with col3:
-                            st.link_button("View in GCS", f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{blob.name}")
-                else:
-                    st.info("No Excel files found yet. Start an extraction to generate reports.")
-            
-            with tab2:
-                if json_blobs:
-                    st.write("**Extraction Summary Reports**")
-                    for blob in sorted(json_blobs, key=lambda x: x.updated, reverse=True)[:5]:
-                        col1, col2, col3 = st.columns([3, 2, 2])
-                        with col1:
-                            st.text(f"📋 {blob.name}")
-                        with col2:
-                            st.text(f"🕒 {blob.updated.strftime('%Y-%m-%d %H:%M:%S')}")
-                        with col3:
-                            st.link_button("View in GCS", f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{blob.name}")
-                else:
-                    st.info("No summary files found yet.")
-            
-            with tab3:
-                if image_blobs:
-                    st.write("**Product Images**")
-                    for blob in sorted(image_blobs, key=lambda x: x.updated, reverse=True)[:20]:
-                        col1, col2, col3 = st.columns([3, 2, 2])
-                        with col1:
-                            st.text(f"🖼️ {blob.name}")
-                        with col2:
-                            st.text(f"📏 {blob.size / 1024:.1f} KB")
-                        with col3:
-                            st.link_button("View Image", f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{blob.name}")
-                else:
-                    st.info("No images found yet.")
-            
-            with tab4:
-                if product_json_blobs:
-                    st.write("**Individual Product Data**")
-                    for blob in sorted(product_json_blobs, key=lambda x: x.updated, reverse=True)[:20]:
-                        col1, col2, col3 = st.columns([3, 2, 2])
-                        with col1:
-                            product_folder = '/'.join(blob.name.split('/')[:-1])
-                            st.text(f"📄 {product_folder}")
-                        with col2:
-                            st.text(f"🕒 {blob.updated.strftime('%Y-%m-%d %H:%M:%S')}")
-                        with col3:
-                            st.link_button("View JSON", f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{blob.name}")
-                else:
-                    st.info("No product JSON files found yet.")
-            
-            with tab5:
-                st.write("**Complete Bucket Contents**")
-                df_blobs = pd.DataFrame([
-                    {
-                        'Name': blob.name,
-                        'Size': f"{blob.size / 1024:.1f} KB" if blob.size else "0 KB",
-                        'Updated': blob.updated.strftime('%Y-%m-%d %H:%M:%S') if blob.updated else 'Unknown',
-                        'Type': blob.content_type or 'Unknown'
-                    }
-                    for blob in sorted(blobs, key=lambda x: x.updated or datetime.min, reverse=True)
-                ])
-                st.dataframe(df_blobs, use_container_width=True)
-                
-                # Bucket statistics
-                col1, col2, col3, col4 = st.columns(4)
-                with col1:
-                    st.metric("Total Files", len(blobs))
-                with col2:
-                    st.metric("Excel Reports", len(excel_blobs))
-                with col3:
-                    st.metric("Product Images", len(image_blobs))
-                with col4:
-                    st.metric("Product JSONs", len(product_json_blobs))
+        # Try to load from the data directory
+        data_path = Path("data/lulurayyan_products.json")
+        if data_path.exists():
+            with open(data_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            return data
         else:
-            st.info("🌟 Bucket is empty. Start an extraction to see results here!")
-            
-        # Direct GCS links
-        st.markdown("---")
-        col1, col2 = st.columns(2)
-        with col1:
-            st.link_button("🌐 Open GCS Console", f"https://console.cloud.google.com/storage/browser/{bucket_name}")
-        with col2:
-            st.link_button("📊 Cloud Storage Dashboard", "https://console.cloud.google.com/storage/")
-            
+            st.error(f"Data file not found at: {data_path.absolute()}")
+            return []
     except Exception as e:
-        st.error(f"❌ Error accessing GCS bucket: {e}")
-        st.info("Please check your authentication and bucket configuration.")
+        st.error(f"Error loading data: {e}")
+        return []
 
-else:
-    st.error("❌ Google Cloud Storage not connected")
-    st.info("Please configure GCS authentication in the sidebar to view results.")
+def create_filters(df):
+    """Create filter widgets in the sidebar"""
+    st.sidebar.markdown("## 🔍 Filters")
+    
+    # Category filter
+    category_values = df['category'].dropna().unique().tolist()
+    categories = ['All'] + sorted(category_values)
+    selected_category = st.sidebar.selectbox("Category", categories)
+    
+    # Subcategory filter (dependent on category)
+    if selected_category == 'All':
+        subcategory_values = df['subcategory'].dropna().unique().tolist()
+        subcategories = ['All'] + sorted(subcategory_values)
+    else:
+        # Filter data by selected category
+        category_df = df[df['category'] == selected_category]
+        subcategory_values = category_df['subcategory'].dropna().unique().tolist()
+        subcategories = ['All'] + sorted(subcategory_values)
+    
+    selected_subcategory = st.sidebar.selectbox("Subcategory", subcategories)
+    
+    # Brand filter (dependent on both category and subcategory)
+    if selected_category == 'All' and selected_subcategory == 'All':
+        # No filters applied - show all brands
+        brand_values = df['brand'].dropna().unique().tolist()
+        brands = ['All'] + sorted(brand_values)
+    elif selected_category != 'All' and selected_subcategory == 'All':
+        # Only category filter applied - show brands from that category
+        category_df = df[df['category'] == selected_category]
+        brand_values = category_df['brand'].dropna().unique().tolist()
+        brands = ['All'] + sorted(brand_values)
+    elif selected_category != 'All' and selected_subcategory != 'All':
+        # Both category and subcategory filters applied - show brands from that specific combination
+        filtered_df = df[(df['category'] == selected_category) & (df['subcategory'] == selected_subcategory)]
+        brand_values = filtered_df['brand'].dropna().unique().tolist()
+        brands = ['All'] + sorted(brand_values)
+    else:
+        # Subcategory filter applied but category is 'All' (shouldn't happen with current logic, but safety check)
+        brand_values = df['brand'].dropna().unique().tolist()
+        brands = ['All'] + sorted(brand_values)
+    
+    selected_brand = st.sidebar.selectbox("Brand", brands)
+    
+    return selected_category, selected_subcategory, selected_brand
 
-# Footer
-st.markdown("---")
-st.markdown("""
-<div style="text-align: center; color: #666; padding: 1rem;">
-    🔍 Product Extractor Pro | Cloud-First Architecture | Google Cloud Storage Only<br/>
-    <small>Built with Streamlit & LangGraph | No local file storage</small>
-</div>
-""", unsafe_allow_html=True)
+def filter_data(df, category, subcategory, brand):
+    """Filter data based on selected criteria"""
+    filtered_df = df.copy()
+    
+    if category != 'All':
+        filtered_df = filtered_df[filtered_df['category'] == category]
+    
+    if subcategory != 'All':
+        filtered_df = filtered_df[filtered_df['subcategory'] == subcategory]
+    
+    if brand != 'All':
+        filtered_df = filtered_df[filtered_df['brand'] == brand]
+    
+    return filtered_df
 
-# Auto-refresh for real-time updates when extraction is running
-if is_running:
-    time.sleep(3)  # Refresh every 3 seconds
+def display_metrics(df):
+    """Display key metrics"""
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.metric("Total Products", len(df))
+    
+    with col2:
+        st.metric("Categories", df['category'].nunique())
+    
+    with col3:
+        st.metric("Brands", df['brand'].nunique())
+    
+    with col4:
+        try:
+            avg_price = df['price'].str.extract(r'(\d+\.?\d*)').astype(float).mean()
+            if pd.isna(avg_price):
+                st.metric("Avg Price (QAR)", "N/A")
+            else:
+                st.metric("Avg Price (QAR)", f"{avg_price:.2f}")
+        except:
+            st.metric("Avg Price (QAR)", "N/A")
 
-    st.rerun() 
+def display_charts(df):
+    """Display charts and visualizations"""
+    st.markdown("## 📊 Data Visualizations")
+    
+    # Check if DataFrame has enough data for charts
+    if df.empty:
+        st.warning("No data available for charts with the current filters.")
+        return
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        # Category distribution
+        try:
+            category_counts = df['category'].dropna().value_counts()
+            if len(category_counts) > 0:
+                fig_category = px.pie(
+                    values=category_counts.values,
+                    names=category_counts.index,
+                    title="Products by Category"
+                )
+                st.plotly_chart(fig_category, use_container_width=True)
+            else:
+                st.info("No category data available for chart")
+        except Exception as e:
+            st.error(f"Error creating category chart: {e}")
+    
+    with col2:
+        # Brand distribution
+        try:
+            brand_counts = df['brand'].dropna().value_counts()
+            if len(brand_counts) > 0:
+                # Ensure we have valid data for the bar chart
+                valid_brands = brand_counts[brand_counts.index.notna()]
+                if len(valid_brands) > 0:
+                    fig_brand = px.bar(
+                        x=valid_brands.index.tolist(),
+                        y=valid_brands.values.tolist(),
+                        title="Products by Brand"
+                    )
+                    st.plotly_chart(fig_brand, use_container_width=True)
+                else:
+                    st.info("No valid brand data available for chart")
+            else:
+                st.info("No brand data available for chart")
+        except Exception as e:
+            st.error(f"Error creating brand chart: {e}")
+
+def display_products(df):
+    """Display filtered products in cards"""
+    st.markdown("## 🛍️ Products")
+    
+    if df.empty:
+        st.warning("No products found with the selected filters.")
+        return
+    
+    for idx, product in df.iterrows():
+        with st.container():
+            col1, col2 = st.columns([1, 3])
+            
+            with col1:
+                # Better image URL handling
+                image_url = product.get('image_url')
+                
+                # Check if image_url exists and is valid
+                if (image_url and 
+                    isinstance(image_url, str) and 
+                    image_url.strip() != '' and 
+                    image_url.lower() != 'nan' and
+                    (image_url.startswith('http://') or image_url.startswith('https://'))):
+                    
+                    try:
+                        # Check if domain is reachable before attempting download
+                        image_loaded = False
+                        
+                        try:
+                            # Extract domain from URL
+                            from urllib.parse import urlparse
+                            parsed_url = urlparse(image_url)
+                            domain = parsed_url.netloc
+                            
+                            # Check if domain is reachable (basic connectivity test)
+                            try:
+                                import socket
+                                socket.gethostbyname(domain)
+                                domain_reachable = True
+                            except socket.gaierror:
+                                domain_reachable = False
+                            
+                            if domain_reachable:
+                                # Create cache directory if it doesn't exist
+                                cache_dir = Path("image_cache")
+                                cache_dir.mkdir(exist_ok=True)
+                                
+                                # Generate a unique filename for the image
+                                import hashlib
+                                image_hash = hashlib.md5(image_url.encode()).hexdigest()
+                                image_extension = image_url.split('.')[-1].split('?')[0] if '.' in image_url else 'jpg'
+                                cached_image_path = cache_dir / f"{image_hash}.{image_extension}"
+                                
+                                # Check if image is already cached
+                                if cached_image_path.exists():
+                                    # Read the cached image file and convert to PIL Image
+                                    with open(cached_image_path, 'rb') as f:
+                                        image_data = f.read()
+                                    cached_image = Image.open(io.BytesIO(image_data))
+                                    st.image(cached_image, width=150, caption="Product Image")
+                                    image_loaded = True
+                                else:
+                                    # Download the image
+                                    headers = {
+                                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                                        'Referer': 'https://lulurayyangroup.com/',
+                                        'Accept': 'image/webp,image/apng,image/*,*/*;q=0.8',
+                                        'Accept-Language': 'en-US,en;q=0.9',
+                                        'Accept-Encoding': 'gzip, deflate, br',
+                                        'Connection': 'keep-alive',
+                                        'Upgrade-Insecure-Requests': '1'
+                                    }
+                                    
+                                    response = requests.get(image_url, timeout=15, headers=headers, allow_redirects=True)
+                                    
+                                    if response.status_code == 200:
+                                        # Check if content is actually an image
+                                        content_type = response.headers.get('content-type', '')
+                                        if content_type.startswith('image/'):
+                                            # Save to cache
+                                            with open(cached_image_path, 'wb') as f:
+                                                f.write(response.content)
+                                            
+                                            # Display the image
+                                            image = Image.open(io.BytesIO(response.content))
+                                            st.image(image, width=150, caption="Product Image")
+                                            image_loaded = True
+                                        else:
+                                            # Content type not image
+                                            pass
+                                    else:
+                                        # HTTP error
+                                        pass
+                            else:
+                                # Domain not reachable, show simple message
+                                st.info(f"Image server {domain} is not accessible")
+                                
+                        except Exception as e:
+                            # Silent error handling
+                            pass
+                        
+                        if not image_loaded:
+                            st.image("https://via.placeholder.com/150x150?text=Image+Not+Available", width=150)
+                                
+                    except Exception as e:
+                        # Silent error handling
+                        st.image("https://via.placeholder.com/150x150?text=Image+Error", width=150)
+                else:
+                    st.image("https://via.placeholder.com/150x150?text=No+Image", width=150)
+            
+            with col2:
+                st.markdown(f"""
+                <div class="product-card">
+                    <h3>{product['name']}</h3>
+                    <p><strong>Category:</strong> {product['category']} > {product['subcategory']}</p>
+                    <p><strong>Brand:</strong> {product['brand']}</p>
+                    <p><strong>SKU:</strong> {product['sku']}</p>
+                    <p><strong>Price:</strong> {product['price']}</p>
+                    <p><strong>Description:</strong> {product['description'][:200]}{'...' if len(product['description']) > 200 else ''}</p>
+                    <p><strong>Extracted:</strong> {product['extracted_at']}</p>
+                    <a href="{product['url']}" target="_blank">View Product</a>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            st.divider()
+
+def clear_image_cache():
+    """Clear the image cache directory"""
+    import shutil
+    cache_dir = Path("image_cache")
+    if cache_dir.exists():
+        shutil.rmtree(cache_dir)
+        st.success("Image cache cleared successfully!")
+    else:
+        st.info("No image cache found.")
+
+def check_image_availability(df):
+    """Check availability of all images in the dataset"""
+    st.sidebar.markdown("## 🔍 Image Status")
+    
+    total_images = len(df[df['image_url'].notna() & (df['image_url'] != '')])
+    if total_images == 0:
+        st.sidebar.info("No images found in dataset")
+        return
+    
+    # Check a sample of images for availability
+    sample_size = min(5, total_images)
+    sample_images = df[df['image_url'].notna() & (df['image_url'] != '')].sample(n=sample_size)
+    
+    available_count = 0
+    unavailable_count = 0
+    
+    for _, product in sample_images.iterrows():
+        image_url = product['image_url']
+        try:
+            from urllib.parse import urlparse
+            parsed_url = urlparse(image_url)
+            domain = parsed_url.netloc
+            
+            import socket
+            socket.gethostbyname(domain)
+            available_count += 1
+        except:
+            unavailable_count += 1
+    
+    st.sidebar.info(f"Sample check: {available_count}/{sample_size} images accessible")
+    st.sidebar.info(f"Total images in dataset: {total_images}")
+    
+    if unavailable_count > 0:
+        st.sidebar.warning("Some image servers may be unreachable")
+
+def main():
+    """Main application function"""
+    # Header
+    st.markdown('<h1 class="main-header">🛍️ Lulu Rayyan Products Dashboard</h1>', unsafe_allow_html=True)
+    
+    # Add cache management in sidebar
+    with st.sidebar.expander("🗂️ Cache Management"):
+        if st.button("Clear Image Cache"):
+            clear_image_cache()
+        cache_dir = Path("image_cache")
+        if cache_dir.exists():
+            cache_size = sum(f.stat().st_size for f in cache_dir.rglob('*') if f.is_file())
+            st.info(f"Cache size: {cache_size / 1024:.1f} KB")
+        else:
+            st.info("No image cache found")
+    
+    # Load data
+    data = load_product_data()
+    
+    if not data:
+        st.error("No data available. Please ensure the data file exists and contains valid JSON data.")
+        return
+    
+    # Convert to DataFrame
+    df = pd.DataFrame(data)
+    
+    # Check image availability (after DataFrame is created)
+    check_image_availability(df)
+    
+    # Create filters
+    selected_category, selected_subcategory, selected_brand = create_filters(df)
+    
+    # Filter data
+    filtered_df = filter_data(df, selected_category, selected_subcategory, selected_brand)
+    
+    # Display metrics
+    st.markdown("## 📈 Key Metrics")
+    display_metrics(filtered_df)
+    
+    # Display charts
+    display_charts(filtered_df)
+    
+    # Display products
+    display_products(filtered_df)
+    
+    # Data download
+    st.markdown("## 📥 Download Data")
+    csv = filtered_df.to_csv(index=False)
+    st.download_button(
+        label="Download Filtered Data as CSV",
+        data=csv,
+        file_name=f"lulu_products_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+        mime="text/csv"
+    )
+    
+    # Raw data view
+    with st.expander("🔍 View Raw Data"):
+        st.dataframe(filtered_df)
+
+if __name__ == "__main__":
+    main()
